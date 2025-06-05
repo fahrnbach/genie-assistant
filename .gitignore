@@ -44,3 +44,7 @@ desktop.ini
 
 # Husky
 .husky/_/
+
+#Chunks
+data/chunks/
+data/embeddings/

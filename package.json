@@ -31,12 +31,14 @@
   "types": "dist/genie-assistant.d.ts",
   "files": [
     "dist",
-    "README.md"
+    "src",
+    "README.md",
+    "LICENCE"
   ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prepare": "vite embed",
+    "prepare": "npm run embed",
     "start": "npm run embed && vite build && npm run dev",
     "demo": "npm run embed && vite build && npm run dev",
     "test": "vitest",
