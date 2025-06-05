@@ -38,6 +38,7 @@ export async function buildEmbeddingDB() {
     const filePath = path.join(CHUNKS_DIR, file);
     const content = await fs.readFile(filePath, 'utf-8');
     const chunks = splitIntoChunks(content, 500, 50);
+
     console.log(`📄 Processing ${file}... (${chunks.length} chunks)`);
 
     for (const chunk of chunks) {
@@ -54,7 +55,26 @@ export async function buildEmbeddingDB() {
 console.log(`✅ Embedding DB built with ${db.length} entries from ${files.length} files.`);
 }
 
-// At the bottom of embedder.js
+// CLI ONLY
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   buildEmbeddingDB();
 }
+
+// LOGS
+
+const now = new Date().toISOString();
+const logPath = join(__dirname, 'embeddings', 'last-embed.log');
+
+writeFileSync(logPath, `Last embedded at: ${now}\n`);
+
+const readable = now.toLocaleString();
+const outputPath = join(__dirname, 'embeddings', 'data.json');
+
+console.log(`
+  ╭────────────────────────────────────────╮
+  │ 🧞‍♂️  Genie Embed Complete!                │
+  ├────────────────────────────────────────┤
+  │ 📅 Last Run: ${readable}
+  │ 📂 Output: ${outputPath.replace(__dirname + '/', '')}
+  ╰────────────────────────────────────────╯
+  `);

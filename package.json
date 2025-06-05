@@ -29,11 +29,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "prepare": "vite build",
+    "prepare": "vite embed",
+    "start": "npm run embed && vite build",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "lint": "eslint . --ext .js,.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "clean": "shx rm -f ./utils/embeddings/data.json",
+    "embed": "npm run clean && node ./utils/embedder.js"
   },
 
   "dependencies": {
