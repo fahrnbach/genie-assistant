@@ -1,36 +1,105 @@
 # 🧞‍♂️ Genie Assistant
 
 A magical riddle-locked AI chat assistant — ask it 3 questions and discover Jacob Fahrnbach's work... or fork it for your own.
-![CI](https://github.com/fahrnbach/genie-assistant/actions/workflows/ci.yml/badge.svg)
-
-## 🌟 Features
-
-- Customizable frontend UI
-- Riddle verification flow
-- Uses OpenAI GPT-4o (or dummy fallback)
-- Built with vanilla JS + optional Vite demo
-- Deploy anywhere or integrate into your own site
 
 ---
 
-## 🚀 Quick Start (Demo)
+## 🔑 Requirements
 
-### 1. Clone & Install
+| Variable         | Description                              |
+|------------------|------------------------------------------|
+| `OPENAI_API_KEY` | Required. For GPT + embeddings API.      |
+| `REDIS_URL`      | Optional. Used for wish count limits.    |
+
+Create a `.env` file with:
+```env
+OPENAI_API_KEY=your-key-here
+# Optional:
+REDIS_URL=redis://localhost:6379
+```
+
+---
+
+## 🚀 Quick Start
+
 ```bash
 git clone https://github.com/yourname/genie-assistant.git
 cd genie-assistant
 npm install
+npm run start  # Starts both frontend and backend
+```
 
+- Frontend → http://localhost:5173  
+- API Backend → http://localhost:3000
 
-## 🔍 Why We Copy index.html for Preview
+---
 
-When building this project as a library using Vite, the `build` step does **not** include the demo HTML file by default. This is intentional — Vite assumes you're publishing a JS library, not a website.
+## 🔧 Customizing the Assistant
 
-However, to preview the assistant *as it would look in production*, we copy the `demo/index.html` file into the `dist/` folder after build using this command:
+You can personalize Genie via `askRAG()` options:
+
+| Option          | Type   | Purpose                            |
+|-----------------|--------|------------------------------------|
+| `personaPrompt` | string | Sets the system prompt / voice     |
+| `resumeLink`    | string | Resume/portfolio URL for CTA       |
+| `calendlyLink`  | string | Contact scheduling link            |
+
+Example:
+```js
+await askRAG(prompt, {
+  personaPrompt: "You are a witty AI mentor named Astra ✨...",
+  resumeLink: 'https://myresume.link',
+  calendlyLink: 'https://calendly.com/myname'
+});
+```
+
+---
+
+## 📜 NPM Scripts Overview
+
+| Script               | Description                                                  |
+|----------------------|--------------------------------------------------------------|
+| `npm run start`      | Starts both frontend (Vite) and backend (Express)            |
+| `npm run dev`        | Starts only the frontend in dev mode                         |
+| `npm run start-server` | Starts only the backend API server                         |
+| `npm run build`      | Builds frontend into `/dist`                                 |
+| `npm run preview`    | Runs a production preview from `dist/`                       |
+| `npm run embed`      | Builds a new embedding DB from `/chunks` input files         |
+| `npm run copy-html`  | Copies the demo index.html to `/dist` for preview support    |
+
+---
+
+## 🧠 Embedding New Data
+
+Put `.md`, `.txt`, or `.html` files into `/utils/chunks/`, then run:
 
 ```bash
-shx cp demo/index.html dist/index.html'
+npm run embed
+```
 
-## 🎯 Pro tip: vite preview is like a mini production server — it shows you exactly what your site will look like after deploy.
+This creates `utils/embeddings/data.json`, which is used for RAG context.
 
-Made with ✨ by Jacob Fahrnbach
+---
+
+## 🔍 Why Copy `index.html` for Preview?
+
+When building this project as a library using Vite, the `build` step does **not** include a demo HTML file by default.
+
+To preview the final bundled assistant UI:
+
+```bash
+npm run copy-html
+npm run preview
+```
+
+> ✅ Works cross-platform using `shx`
+
+🎯 **Pro tip**: `vite preview` is like a mini production server — it shows you exactly what your site will look like *after deploy*.
+
+---
+
+## 🤝 Contribute
+
+Fork it, customize your own Genie, or submit a PR!
+
+Made with ✨ by [Jacob Fahrnbach](https://fahrnbach.one)
