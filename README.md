@@ -1,9 +1,9 @@
 # 🧞‍♂️ Genie Assistant
+![CI](https://github.com/fahrnbach/genie-assistant/actions/workflows/ci.yml/badge.svg)
 
 ## 🧪⚠️ This Project is still experimental. You may experience a few quirks
 
 A magical riddle-locked AI chat assistant — ask it 3 questions and discover Jacob Fahrnbach's work... or fork it for your own.
-![CI](https://github.com/fahrnbach/genie-assistant/actions/workflows/ci.yml/badge.svg)
 
 ---
 
