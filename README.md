@@ -15,7 +15,7 @@ Create a `.env` file with:
 ```env
 OPENAI_API_KEY=your-key-here
 # Optional:
-REDIS_URL=redis://localhost:6379
+REDIS_URL=your-redis-url-here
 ```
 
 ---
@@ -23,7 +23,7 @@ REDIS_URL=redis://localhost:6379
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/yourname/genie-assistant.git
+git clone https://github.com/fahrnbach/genie-assistant.git
 cd genie-assistant
 npm install
 npm run start  # Starts both frontend and backend
