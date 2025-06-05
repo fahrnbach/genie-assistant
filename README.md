@@ -7,6 +7,34 @@ A magical riddle-locked AI chat assistant — ask it 3 questions and discover Ja
 
 ---
 
+## ✍️ How to Customize Genie AI: Writing Chunks ![Docs](https://img.shields.io/badge/chunking-guide-blueviolet?style=flat-square)
+
+To personalize what the Genie knows, just add your own content as `.md`, `.txt`, or `.html` files to:
+
+```
+data/chunks/
+```
+
+Each file is split into smaller pieces (“chunks”) and converted into vector embeddings used for RAG (Retrieval-Augmented Generation).
+
+Then run:
+
+```bash
+npm run embed
+```
+
+This regenerates `utils/embeddings/data.json` and logs the time in `last-embed.log`. Your Genie is now smarter ✨
+
+### 🧠 Chunk Writing Tips
+
+✅ **Be concise** — short paragraphs (under ~300 tokens) are ideal for embedding.  
+✅ **Stick to one topic per paragraph** to help the model retrieve the right info.  
+✅ **Avoid too much formatting** — plain language works best.  
+✅ **Use headings** (e.g. `## Project Name`) for clarity and searchability.  
+✅ **Test with sample questions** to see if your chunks are retrieved effectively.  
+
+---
+
 ## 🔑 Requirements
 
 | Variable         | Description                              |
@@ -98,6 +126,18 @@ npm run preview
 > ✅ Works cross-platform using `shx`
 
 🎯 **Pro tip**: `vite preview` is like a mini production server — it shows you exactly what your site will look like *after deploy*.
+
+---
+
+## 🛠️ Future Improvements
+
+Here are some ideas for future upgrades:
+
+- 🔄 Use LangChain to manage retrieval, prompt construction, and model calls  
+- 🧠 Switch to a full vector store like Chroma or Weaviate  
+- ✨ Support multiple personas and switching themes  
+- 🛡️ Add token/session auth or more advanced user controls  
+- 📊 Visualize embedding coverage and chunk search relevance  
 
 ---
 

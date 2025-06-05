@@ -1,19 +1,25 @@
 {
   "name": "genie-assistant",
-  "version": "1.0.0",
-  "description": "A magical, customizable chat assistant UI + RAG backend powered by GPT-4o",
-  "keywords": ["chatbot", "genie", "rag", "ai", "frontend", "assistant"],
+  "version": "0.0.1",
+  "description": "(🚧 Experimental notice) A magical, customizable chat assistant UI + RAG backend powered by GPT-4o",
+  "keywords": [
+    "chatbot",
+    "genie",
+    "rag",
+    "ai",
+    "frontend",
+    "assistant"
+  ],
   "license": "MIT",
   "author": "Jacob Fahrnbach",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/genie-assistant.git"
+    "url": "https://github.com/fahrnbach/genie-assistant.git"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/genie-assistant#readme",
+  "homepage": "https://github.com/fahrnbach/genie-assistant#readme",
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/genie-assistant/issues"
+    "url": "https://github.com/fahrnbach/genie-assistant/issues"
   },
-
   "type": "module",
   "main": "dist/genie-assistant.js",
   "exports": {
@@ -23,14 +29,16 @@
     }
   },
   "types": "dist/genie-assistant.d.ts",
-  "files": ["dist", "README.md"],
-
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
     "prepare": "vite embed",
-    "start": "npm run embed && vite build",
+    "start": "npm run embed && vite build && npm run dev",
+    "demo": "npm run embed && vite build && npm run dev",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "lint": "eslint . --ext .js,.ts",
@@ -38,8 +46,8 @@
     "clean": "shx rm -f ./utils/embeddings/data.json",
     "embed": "npm run clean && node ./utils/embedder.js"
   },
-
   "dependencies": {
+    "@langchain/openai": "^0.5.12",
     "chalk": "^5.4.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -50,13 +58,13 @@
     "redis": "^5.1.1",
     "uuid": "^11.1.0"
   },
-
   "devDependencies": {
     "eslint": "^8.0.0",
-    "prettier": "^3.0.0",
-    "vite": "^5.0.0",
-    "vitest": "^1.0.0",
     "husky": "^9.0.0",
-    "lint-staged": "^15.0.0"
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
+    "shx": "^0.4.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0"
   }
 }

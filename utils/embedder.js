@@ -1,80 +1,71 @@
+// utils/embedder.js
+import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs/promises';
+import chalk from 'chalk';
 import dotenv from 'dotenv';
-import OpenAI from 'openai/index.js';
-import { splitIntoChunks } from './chunker';
+import { fileURLToPath } from 'url';
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { splitIntoChunks } from './chunker.js';
 
-// Setup environment
+dotenv.config();
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('❌ Missing OPENAI_API_KEY in .env \n This Package requires that you use an OpenAi API key in your .env \n');
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const envPath = path.resolve(__dirname, '../../.env');
-dotenv.config({ path: envPath });
 
-// Paths
-const CHUNKS_DIR = path.resolve(__dirname, '../chunks');
-const EMBEDDINGS_FILE = path.resolve(__dirname, '../embeddings/data.json');
+const CHUNKS_DIR = path.join(__dirname, '..', 'data', 'chunks');
+const OUTPUT_FILE = path.join(__dirname, '..', 'data', 'embeddings', 'data.json');
+const LOG_FILE = path.join(__dirname, '..', 'data', 'embeddings', 'last-embed.log');
 
-// Ensure API key is present
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('❌ Missing OPENAI_API_KEY in .env');
+function logBanner(message) {
+  console.log(`\n${chalk.magentaBright.bold('✨ ' + message + ' ✨')}\n`);
 }
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+async function runEmbedder({ silent = false } = {}) {
+  const start = Date.now();
+  const chunkFiles = fs.readdirSync(CHUNKS_DIR).filter(f => f.endsWith('.md') || f.endsWith('.txt') || f.endsWith('.html'));
 
-export async function embedText(text) {
-  const res = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: text,
-  });
-  return res.data[0].embedding;
-}
-
-export async function buildEmbeddingDB() {
-  const files = await fs.readdir(CHUNKS_DIR);
-  const db = [];
-
-  for (const file of files) {
+  const allChunks = [];
+  for (const file of chunkFiles) {
     const filePath = path.join(CHUNKS_DIR, file);
-    const content = await fs.readFile(filePath, 'utf-8');
-    const chunks = splitIntoChunks(content, 500, 50);
-
-    console.log(`📄 Processing ${file}... (${chunks.length} chunks)`);
-
-    for (const chunk of chunks) {
-      const embedding = await embedText(chunk);
-      db.push({
-        source: file,
-        content: chunk,
-        embedding,
-      });
-    }
+    const text = fs.readFileSync(filePath, 'utf-8');
+    const chunks = splitIntoChunks(text);
+    chunks.forEach(chunk => allChunks.push({ content: chunk, source: file }));
   }
 
-  await fs.writeFile(EMBEDDINGS_FILE, JSON.stringify(db, null, 2));
-console.log(`✅ Embedding DB built with ${db.length} entries from ${files.length} files.`);
+  const embedder = new OpenAIEmbeddings();
+  const embeddings = await Promise.all(
+    allChunks.map(async ({ content, source }) => ({
+      content,
+      source,
+      embedding: await embedder.embedQuery(content)
+    }))
+  );
+
+  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(embeddings, null, 2));
+  const timestamp = new Date().toISOString();
+  fs.writeFileSync(LOG_FILE, `Last embedded at: ${timestamp}\n`);
+
+  if (!silent) {
+    logBanner('Embeddings Updated');
+    console.log(chalk.cyan(`Chunks processed:`), chunkFiles.length);
+    console.log(chalk.cyan(`Output:`), OUTPUT_FILE);
+    console.log(chalk.cyan(`Time:`), `${((Date.now() - start) / 1000).toFixed(2)}s`);
+  }
+
+  return {
+    fileCount: chunkFiles.length,
+    outputFile: OUTPUT_FILE,
+    time: ((Date.now() - start) / 1000).toFixed(2)
+  };
 }
 
-// CLI ONLY
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  buildEmbeddingDB();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  runEmbedder();
 }
 
-// LOGS
-
-const now = new Date().toISOString();
-const logPath = join(__dirname, 'embeddings', 'last-embed.log');
-
-writeFileSync(logPath, `Last embedded at: ${now}\n`);
-
-const readable = now.toLocaleString();
-const outputPath = join(__dirname, 'embeddings', 'data.json');
-
-console.log(`
-  ╭────────────────────────────────────────╮
-  │ 🧞‍♂️  Genie Embed Complete!                │
-  ├────────────────────────────────────────┤
-  │ 📅 Last Run: ${readable}
-  │ 📂 Output: ${outputPath.replace(__dirname + '/', '')}
-  ╰────────────────────────────────────────╯
-  `);
+export default runEmbedder;

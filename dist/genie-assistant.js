@@ -1,50 +1,59 @@
-class r {
-  constructor({ target: e = "body", apiBaseUrl: t = "/api" } = {}) {
-    this.target = document.querySelector(e), this.apiBaseUrl = t, this.renderUI();
+function r(i) {
+  for (let t = 0; t < 20; t++) {
+    const e = document.createElement("div");
+    e.className = "sparkle", e.style.left = `${Math.random() * 100}%`, e.style.top = `${Math.random() * 100}%`, i.appendChild(e), setTimeout(() => e.remove(), 1e3);
+  }
+}
+function s(i) {
+  i.classList.add("glow"), console.log("hi");
+}
+class a {
+  constructor({ target: t = "body", apiBaseUrl: e = "/api" } = {}) {
+    this.target = document.querySelector(t), this.apiBaseUrl = e, this.renderUI();
   }
   renderUI() {
-    this.container = document.createElement("div"), this.container.id = "genie-chat", this.target.appendChild(this.container), this.chatBox = document.createElement("div"), this.chatBox.classList.add("chat-box"), this.container.appendChild(this.chatBox), this.inputField = document.createElement("input"), this.inputField.type = "text", this.inputField.placeholder = "Speak your wish...", this.container.appendChild(this.inputField), this.responseBox = document.createElement("div"), this.responseBox.classList.add("response-box"), this.container.appendChild(this.responseBox), this.inputField.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const t = this.inputField.value.trim();
-        if (!t) return;
-        this.handleInput(t);
+    this.container = document.createElement("div"), this.container.id = "genie-chat", this.target.appendChild(this.container), this.chatBox = document.createElement("div"), this.chatBox.classList.add("chat-box"), this.container.appendChild(this.chatBox), this.inputField = document.createElement("input"), this.inputField.type = "text", this.inputField.placeholder = "Speak your wish...", this.container.appendChild(this.inputField), this.responseBox = document.createElement("div"), this.responseBox.classList.add("response-box"), this.container.appendChild(this.responseBox), r(this.container), s(this.container), this.inputField.addEventListener("keydown", (t) => {
+      if (t.key === "Enter") {
+        const e = this.inputField.value.trim();
+        if (!e) return;
+        this.handleInput(e);
       }
     });
   }
-  async handleInput(e) {
-    if (!await this.verifyRiddle(e)) {
+  async handleInput(t) {
+    if (!await this.verifyRiddle(t)) {
       this.responseBox.innerHTML = "🧞‍♂️ Hmm... that answer doesn't seem quite right. Try again!";
       return;
     }
-    const i = await this.ask(e);
-    this.renderResponse(i);
+    const n = await this.ask(t);
+    this.renderResponse(n);
   }
-  async verifyRiddle(e) {
+  async verifyRiddle(t) {
     try {
       return (await (await fetch(`${this.apiBaseUrl}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answer: e })
+        body: JSON.stringify({ answer: t })
       })).json()).correct;
-    } catch (t) {
-      return console.error("Verification error:", t), !1;
+    } catch (e) {
+      return console.error("Verification error:", e), !1;
     }
   }
-  async ask(e) {
+  async ask(t) {
     try {
       return (await (await fetch(`${this.apiBaseUrl}/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: e })
+        body: JSON.stringify({ prompt: t })
       })).json()).reply;
-    } catch (t) {
-      return console.error("Ask error:", t), "🧞‍♂️ Sorry, I couldn't understand that wish. Try again?";
+    } catch (e) {
+      return console.error("Ask error:", e), "🧞‍♂️ Sorry, I couldn't understand that wish. Try again?";
     }
   }
-  renderResponse(e) {
-    this.responseBox.innerHTML = e;
+  renderResponse(t) {
+    this.responseBox.innerHTML = t;
   }
 }
 export {
-  r as GenieAssistant
+  a as GenieAssistant
 };

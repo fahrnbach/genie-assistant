@@ -1,5 +1,7 @@
 // genie-assistant.js
 import './styles.css';
+import './sparkles.js';
+import { createSparkleBurst, startGlowingBorder } from './sparkles.js';
 
 export class GenieAssistant {
     constructor({ target = 'body', apiBaseUrl = '/api' } = {}) {
@@ -25,6 +27,9 @@ export class GenieAssistant {
       this.responseBox = document.createElement('div');
       this.responseBox.classList.add('response-box');
       this.container.appendChild(this.responseBox);
+
+      createSparkleBurst(this.container);
+      startGlowingBorder(this.container);
   
       this.inputField.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -80,4 +85,3 @@ export class GenieAssistant {
       this.responseBox.innerHTML = reply;
     }
   }
-  
