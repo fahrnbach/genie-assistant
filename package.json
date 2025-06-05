@@ -1,0 +1,59 @@
+{
+  "name": "genie-assistant",
+  "version": "1.0.0",
+  "description": "A magical, customizable chat assistant UI + RAG backend powered by GPT-4o",
+  "keywords": ["chatbot", "genie", "rag", "ai", "frontend", "assistant"],
+  "license": "MIT",
+  "author": "Jacob Fahrnbach",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/genie-assistant.git"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/genie-assistant#readme",
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/genie-assistant/issues"
+  },
+
+  "type": "module",
+  "main": "dist/genie-assistant.js",
+  "exports": {
+    ".": {
+      "import": "./dist/genie-assistant.js",
+      "require": "./dist/genie-assistant.umd.cjs"
+    }
+  },
+  "types": "dist/genie-assistant.d.ts",
+  "files": ["dist", "README.md"],
+
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "vite build",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "eslint . --ext .js,.ts",
+    "format": "prettier --write ."
+  },
+
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "openai": "^5.0.1",
+    "redis": "^5.1.1",
+    "uuid": "^11.1.0"
+  },
+
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0"
+  }
+}

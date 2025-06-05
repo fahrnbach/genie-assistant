@@ -1,0 +1,50 @@
+class r {
+  constructor({ target: e = "body", apiBaseUrl: t = "/api" } = {}) {
+    this.target = document.querySelector(e), this.apiBaseUrl = t, this.renderUI();
+  }
+  renderUI() {
+    this.container = document.createElement("div"), this.container.id = "genie-chat", this.target.appendChild(this.container), this.chatBox = document.createElement("div"), this.chatBox.classList.add("chat-box"), this.container.appendChild(this.chatBox), this.inputField = document.createElement("input"), this.inputField.type = "text", this.inputField.placeholder = "Speak your wish...", this.container.appendChild(this.inputField), this.responseBox = document.createElement("div"), this.responseBox.classList.add("response-box"), this.container.appendChild(this.responseBox), this.inputField.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const t = this.inputField.value.trim();
+        if (!t) return;
+        this.handleInput(t);
+      }
+    });
+  }
+  async handleInput(e) {
+    if (!await this.verifyRiddle(e)) {
+      this.responseBox.innerHTML = "🧞‍♂️ Hmm... that answer doesn't seem quite right. Try again!";
+      return;
+    }
+    const i = await this.ask(e);
+    this.renderResponse(i);
+  }
+  async verifyRiddle(e) {
+    try {
+      return (await (await fetch(`${this.apiBaseUrl}/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answer: e })
+      })).json()).correct;
+    } catch (t) {
+      return console.error("Verification error:", t), !1;
+    }
+  }
+  async ask(e) {
+    try {
+      return (await (await fetch(`${this.apiBaseUrl}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: e })
+      })).json()).reply;
+    } catch (t) {
+      return console.error("Ask error:", t), "🧞‍♂️ Sorry, I couldn't understand that wish. Try again?";
+    }
+  }
+  renderResponse(e) {
+    this.responseBox.innerHTML = e;
+  }
+}
+export {
+  r as GenieAssistant
+};
